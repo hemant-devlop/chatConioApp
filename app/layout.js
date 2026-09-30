@@ -1,5 +1,8 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { AuthProvider } from "@/context/authContext";
+import SocketProvider from "@/components/SocketProvider";
+import ReduxProvider from "@/lib/ReduxProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -22,7 +25,17 @@ export default function RootLayout({ children }) {
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className={` font-body bg-cream text-charcoal antialiased`}
+      >
+        <ReduxProvider>
+          <AuthProvider>
+              <SocketProvider>
+                {children}
+              </SocketProvider>
+          </AuthProvider>
+        </ReduxProvider>
+
+      </body>
     </html>
   );
 }
