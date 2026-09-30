@@ -1,49 +1,59 @@
 'use client';
 import { getMe, refreshAccessToken } from "@/lib/http";
-import { usePathname } from "next/navigation";
 import { createContext, useContext, useEffect, useState } from "react";
 
 const AuthContext = createContext(null);
+const authStatusValues = {
+    loading: "loading",
+    authenticated: "authenticated",
+    unauthenticated: "unauthenticated"
+};
 
 export const AuthProvider = ({ children }) => {
     const [accessToken, setAccessToken] = useState(null)
     const [user, setUser] = useState(null);
-    const currAuth = {
-        loading: "loading",
-        authenticated: "authenticated",
-        unauthenticated: "unauthenticated"
-    };
-    const [authStatus, setAuthStatus] = useState(currAuth?.loading)
-    const authPaths = ['/login', '/signup', '/forgot-password']
-    const pathname = usePathname()
+    const [authStatus, setAuthStatus] = useState(authStatusValues.loading)
     useEffect(() => {
+        let active = true;
 
-        async function refreshWeb() {
-            const response = await refreshAccessToken()
-            if (response.success) {
-                setAuthStatus(currAuth?.authenticated)
-                setAccessToken(response?.data?.accessToken)
-            } else {
-                setAuthStatus(currAuth?.unauthenticated)
-                setAccessToken(null)
-            }
-        }
-        refreshWeb();
-    }, [])
-    useEffect(() => {
-        if (!accessToken) {
-            return;
-        }
-        async function getUserdata() {
-            const response = await getMe(accessToken)
-            if (response.success) {
-                setUser(response?.data)
-            } else {
+        async function loadAuth() {
+            try {
+                const refreshResponse = await refreshAccessToken()
+                const token = refreshResponse?.success ? refreshResponse?.data?.accessToken : null
+
+                if (!active) return;
+
+                if (!token) {
+                    setAuthStatus(authStatusValues.unauthenticated)
+                    return;
+                }
+
+                const userResponse = await getMe(token)
+                if (!active) return;
+
+                if (!userResponse?.success || !userResponse?.data) {
+                    setUser(null)
+                    setAccessToken(null)
+                    setAuthStatus(authStatusValues.unauthenticated)
+                    return;
+                }
+
+                setUser(userResponse.data)
+                setAccessToken(token)
+                setAuthStatus(authStatusValues.authenticated)
+            } catch (error) {
+                if (!active) return;
                 setUser(null)
+                setAccessToken(null)
+                setAuthStatus(authStatusValues.unauthenticated)
             }
         }
-        getUserdata();
-    }, [accessToken])
+
+        loadAuth();
+        return () => {
+            active = false;
+        };
+    }, [])
 
     return (
         <AuthContext.Provider value={{ accessToken, setAccessToken, user, setUser, authStatus, setAuthStatus }}>
