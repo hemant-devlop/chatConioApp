@@ -2,7 +2,7 @@
 
 import { getConversation, getConversations, getsConversation, sendMessage } from "@/lib/http";
 import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { startTransition, useEffect, useOptimistic, useState } from "react";
 import ChatTopBar from "./ChattopBar";
 import MessageList from "./MessageList";
 import MessageInput from "./MessageInput";
@@ -16,7 +16,7 @@ export default function ConversationPage() {
 
   const [user, setUser] = useState(null);
   const [messages, setMessages] = useState([]);
-
+  // const [optimisticMessages, setOptimisticMessages] = useOptimistic(messages,(curr,newMess)=>[...curr,newMess]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -67,39 +67,55 @@ export default function ConversationPage() {
 
 
   useEffect(() => {
-    const getData=(data)=>{
-      console.log(data)
-    }
-    socket.on("new-message",getData)
+    if (!conversationId) return;
+
+    const joinConversation = () => {
+      socket.emit("join-conversation", { conversationId });
+    };
+    const handleNewMessage = (data) => {
+      if (data.conversationId !== conversationId) return;
+    const setMsgData=(current) =>
+        current.some((message) => message.clientMessageId === data.newMessage.clientMessageId)
+          ? current
+          : [...current, data.newMessage]
+      setMessages(setMsgData);
+    };
+
+    socket.on("connect", joinConversation);
+    socket.on("new-message", handleNewMessage);
+    if (socket.connected) joinConversation();
+
     return () => {
-      socket.off("new-message",getData)
-    }
-  }, [])
-  
+      socket.off("connect", joinConversation);
+      socket.off("new-message", handleNewMessage);
+    };
+  }, [conversationId]);
+
   async function handleSend(text) {
-    console.log(messages)
-    console.log(text)
-    socket.emit("send-message", { text, conversationId })
+    const clientMessageId=crypto.randomUUID();
+    const optimisticMessage = {
+      _id: new Date().toISOString(),
+      content: text,
+      clientMessageId,
+      conversation: conversationId,
+      createdAt: new Date().toISOString(),
+      messageType: "text",
+      sender: _id,
+    }
 
-    // setMessages((prev) => [...prev, optimisticMessage]);
+    setMessages(prev=>[...prev,optimisticMessage])
 
-    // try {
-    //   const saved = await sendMessage(1, text);
-    //   setMessages((prev) => prev.map((m) => (m.id === optimisticMessage.id ? saved : m)));
-    // } catch (err) {
-    //   setMessages((prev) =>
-    //     prev.map((m) => (m.id === optimisticMessage.id ? { ...m, status: "failed" } : m))
-    //   );
-    // }
+
+    socket.emit("send-message", { text, conversationId,clientMessageId })
   }
 
-  // if (loading || !conversation) {
-  //   return (
-  //     <div className="flex h-full flex-1 items-center justify-center">
-  //       <p className="text-sm text-charcoal/60">Loading conversation…</p>
-  //     </div>
-  //   );
-  // }
+  if (loading || !conversationId || !user) {
+    return (
+      <div className="flex h-full flex-1 items-center justify-center">
+        <p className="text-sm font- text-charcoal/60">Loading conversation…</p>
+      </div>
+    );
+  }
 
   return (
     <div className="relative flex flex-1 h-dvh flex-col overflow-hidden">

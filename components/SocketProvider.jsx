@@ -42,8 +42,15 @@ const SocketProvider = ({ children }) => {
                 setSocketToken(null)
             }
         }
+        
+        function handleError(error) {
+
+            console.log('socket error', error.message)
+
+        }
 
 
+        socket.on('socket-error', handleError);
         socket.on('connect', handleConnect);
         socket.on('disconnect', handleDisconnect);
         socket.on('connect_error', handleConnectError);

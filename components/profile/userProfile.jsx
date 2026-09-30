@@ -1,7 +1,6 @@
 "use client"
 import { useAuth } from "@/context/authContext";
-import { getConversation, getConversations, getNewConversation, getUser } from "@/lib/http";
-import { socket } from "@/lib/socket";
+import { getNewConversation, getUser } from "@/lib/http";
 import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
@@ -33,7 +32,6 @@ export default function UserProfile() {
         const res = await getNewConversation(accessToken, user?._id)
         if (res?.success) {
             router.push(`/chat/${res?.data?.conversationId}`)
-            socket.emit('join-connversation', { conversationId: res?.data?.conversationId })
         } else {
             console.log("something went wrong")
         }
