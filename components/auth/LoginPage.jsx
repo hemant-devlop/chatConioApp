@@ -31,7 +31,7 @@ export default function LoginPage() {
     setIsSubmitting(true);
     setIsPassVisible(false)
     try {
-      const response = await login(formData.email, formData.password)
+      const response = await login(formData?.email, formData?.password)
       console.log(response)
       if(!response?.success){
         setErrors(response?.message)
@@ -40,7 +40,7 @@ export default function LoginPage() {
         setAccessToken(response?.data?.accessToken);
         setUser(response?.data?.user)
         setAuthStatus("authenticated")
-        router.push('/home')
+        router.replace('/home')
       }
     } catch (error) {
       console.error('login error',error)
