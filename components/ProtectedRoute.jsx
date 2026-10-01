@@ -7,6 +7,7 @@ const ProtectedRoute = ({ children }) => {
     const router = useRouter()
     const { authStatus } = useAuth()
     useEffect(() => {
+        console.log("prot",authStatus)
         if (authStatus === 'unauthenticated') {
             router.push('/login')
         }

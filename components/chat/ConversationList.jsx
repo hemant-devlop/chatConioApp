@@ -15,7 +15,6 @@ export default function ConversationList() {
   // console.log(conversations)
   useEffect(() => {
     if (!accessToken) return;
-    let timer;
     async function getConversationList() {
       const res = await getConversations(accessToken)
       if (res.success) {
@@ -26,9 +25,6 @@ export default function ConversationList() {
       }
     }
     getConversationList()
-    return () => {
-      clearTimeout(timer)
-    }
   }, [accessToken])
   const pathname = usePathname();
   const [query, setQuery] = useState("");

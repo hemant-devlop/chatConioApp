@@ -8,7 +8,6 @@ import { useEffect } from "react"
 const page = () => {
   const router=useRouter()
   const {authStatus}=useAuth()
-  console.log(authStatus)
   useEffect(()=>{
     if(authStatus === 'authenticated'){
       router.push('/home')
