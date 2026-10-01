@@ -32,7 +32,7 @@ export default function LoginPage() {
     setIsPassVisible(false)
     try {
       const response = await login(formData?.email, formData?.password)
-      console.log(response)
+  
       if(!response?.success){
         setErrors(response?.message)
       }

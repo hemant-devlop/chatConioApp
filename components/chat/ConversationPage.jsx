@@ -1,8 +1,8 @@
 "use client";
 
-import { getConversation, getConversations, getsConversation, sendMessage } from "@/lib/http";
-import { useParams } from "next/navigation";
-import { startTransition, useEffect, useOptimistic, useState } from "react";
+import { getConversation, getConversationUser } from "@/lib/http";
+import { useParams, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import ChatTopBar from "./ChattopBar";
 import MessageList from "./MessageList";
 import MessageInput from "./MessageInput";
@@ -16,24 +16,39 @@ export default function ConversationPage() {
 
   const [user, setUser] = useState(null);
   const [messages, setMessages] = useState([]);
+const router=useRouter()
   // const [optimisticMessages, setOptimisticMessages] = useOptimistic(messages,(curr,newMess)=>[...curr,newMess]);
   const [loading, setLoading] = useState(true);
-
   useEffect(() => {
-    if (!accessToken) return;
+    if (!accessToken || !conversationId) return;
     let active = true;
     setLoading(true);
 
     async function fetchConversations() {
-      const userConversation = await getConversations(accessToken)
+     try {
+       const [conversationResponse,messageResponse]=await Promise.all([
+        getConversationUser(accessToken,conversationId),
+        getConversation(accessToken,conversationId)
+      ])
 
       if (!active) return;
-
-      if (userConversation.success && _id) {
-        setUser(userConversation.data[0].participants.filter(c => c._id !== _id)[0])
+      if(!conversationResponse.success || !messageResponse.success){
+        alert('user not found/invalid id')
+         router.push('/chat')
+      }
+      if (conversationResponse.success && _id) {
+        setUser(conversationResponse?.data?.participants.filter(c => c._id !== _id)[0])
+      }
+      if (messageResponse.success && _id) {
+        setMessages(messageResponse.data)
       }
 
       setLoading(false);
+     } catch (error) {
+        console.error("api",error)
+     }finally{
+        setLoading(false);
+     }
     }
 
     fetchConversations();
@@ -43,27 +58,7 @@ export default function ConversationPage() {
     };
   }, [accessToken, conversationId, _id]);
 
-  useEffect(() => {
-    if (!accessToken || !conversationId) return;
-    let active = true;
-    setLoading(true);
-
-    async function fetchMessages() {
-      const userMessages = await getConversation(accessToken, conversationId)
-
-      if (!active) return;
-      if (userMessages.success) {
-        setMessages(userMessages.data)
-      }
-      setLoading(false);
-    }
-
-    fetchMessages();
-
-    return () => {
-      active = false;
-    };
-  }, [accessToken, conversationId, _id]);
+ 
 
 
   useEffect(() => {
@@ -109,7 +104,7 @@ export default function ConversationPage() {
     socket.emit("send-message", { text, conversationId,clientMessageId })
   }
 
-  if (loading || !conversationId || !user) {
+  if (loading || !conversationId) {
     return (
       <div className="flex h-full flex-1 items-center justify-center">
         <p className="text-sm font- text-charcoal/60">Loading conversation…</p>
