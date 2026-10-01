@@ -1,3 +1,4 @@
+'use client'
 import ProtectedRoute from '@/components/ProtectedRoute'
 import { useAuth } from '@/context/authContext'
 import React from 'react'
