@@ -31,7 +31,7 @@ export default function LoginPage() {
     setIsSubmitting(true);
     setIsPassVisible(false)
     try {
-      const response = await login(formData?.email, formData?.password)
+      const response = await login(formData?.email.toLocaleLowerCase(), formData?.password)
   
       if(!response?.success){
         setErrors(response?.message)

@@ -48,12 +48,12 @@ export default function HomePage() {
 
       <header className="relative z-10 flex shrink-0 items-center justify-between px-6 py-5 lg:px-10">
         <span className="font-display text-lg font-semibold text-charcoal">
-          thread<span className="text-slate">.</span>
+          Thread<span className="text-slate">.</span>
         </span>
         <div className="flex items-center gap-2 sm:gap-4">
           {user ?  <Link
               href="/profile"
-              className="rounded-full bg-charcoal ps-4 pe-2 py-2 text-sm font-medium text-cream transition-colors hover:bg-charcoal/90"
+              className="rounded-full bg-charcoal ps-4 pe-2 py-2 text-sm capitalize font-medium text-cream transition-colors hover:bg-charcoal/90"
             >
               {user?.name||'Welcome'} <Avatar name="hemant kumar " avatarUrl={null} status='offline' statusHide={false} size="sm"/>
             </Link> :

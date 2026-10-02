@@ -49,7 +49,7 @@ export default function UserProfile() {
 
                 {/* Header */}
                 <div className="flex items-center justify-between mb-8">
-                    <h1 className="text-xl font-semibold">{user?.name}</h1>
+                    <h1 className="text-xl font-semibold capitalize">{user?.name}</h1>
 
 
                 </div>
@@ -75,7 +75,7 @@ export default function UserProfile() {
 
                         {/* Username */}
                         <div className="flex flex-wrap items-center gap-3">
-                            <h2 className="text-xl font-normal">{user?.name}</h2>
+                            <h2 className="text-xl font-normal capitalize">{user?.name}</h2>
 
 
                             <div className="flex gap-6">
@@ -109,7 +109,7 @@ export default function UserProfile() {
 
                         {/* Bio */}
                         <div className="mt-5">
-                            <h3 className="font-semibold">{user?.username}</h3>
+                            <h3 className="font-semibold capitalize">{user?.username}</h3>
 
                             <p className="mt-1 text-sm leading-5">
                                 MERN Stack Developer 💻

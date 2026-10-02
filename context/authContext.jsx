@@ -21,7 +21,7 @@ export const AuthProvider = ({ children }) => {
                 const refreshResponse = await refreshAccessToken()
                 const token = refreshResponse?.success ? refreshResponse?.data?.accessToken : null
 
-                if (!active) return;
+                if (!active) return;  
 
                 if (!token) {
                     setAuthStatus(authStatusValues.unauthenticated)

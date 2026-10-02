@@ -22,6 +22,7 @@ import Avatar from "./Avatar";
 
 export default function ChatTopBar({ user }) {
   const isTyping = false;
+  console.log(user)
 
   return (
     <header className="z-20 flex shrink-0 items-center justify-between border-b border-silver bg-white px-6 py-3.5">
@@ -30,12 +31,12 @@ export default function ChatTopBar({ user }) {
           <SvgBack className="text-charcoal" />
         </Link>
 
-        <Link href='/profile' className="cursor-pointer" >
+        <Link href={`/profile/${user?._id}`} className="cursor-pointer" >
           <Avatar name={user?.name} avatarUrl={user?.avatarUrl} status={user?.status} size="sm" />
         </Link>
         <div>
-          <Link href='/profile' className="cursor-pointer" >
-            <p className="text-sm font-medium text-charcoal">{user?.name}</p>
+          <Link href={`/profile/${user?._id}`} className="cursor-pointer" >
+            <p className="text-sm font-medium text-charcoal capitalize">{user?.name}</p>
           </Link>
           <p className={`text-xs ${isTyping ? "font-medium text-slate" : "text-charcoal/50"}`}>  offline </p>
         </div>
