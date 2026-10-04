@@ -19,6 +19,7 @@ export const AuthProvider = ({ children }) => {
         async function loadAuth() {
             try {
                 const refreshResponse = await refreshAccessToken()
+                console.log("context::",refreshResponse)
                 const token = refreshResponse?.success ? refreshResponse?.data?.accessToken : null
 
                 if (!active) return;  

@@ -32,11 +32,12 @@ export default function LoginPage() {
     setIsPassVisible(false)
     try {
       const response = await login(formData?.email.toLocaleLowerCase(), formData?.password)
-  
+
       if(!response?.success){
         setErrors(response?.message)
       }
       if(response?.success){
+        console.log("from login:",response?.data?.accessToken)
         setAccessToken(response?.data?.accessToken);
         setUser(response?.data?.user)
         setAuthStatus("authenticated")
@@ -44,7 +45,7 @@ export default function LoginPage() {
       }
     } catch (error) {
       console.error('login error',error)
-      throw new Error(error)
+      setErrors("Unable to connect to the server. Check your connection and try again.")
     } finally {
       setIsSubmitting(false)
     }
@@ -86,7 +87,7 @@ export default function LoginPage() {
             autoComplete="current-password"
             handlePasswordVisible={handlePasswordVisible}
           />
-           {errors && <div className="font-medium text-red-700">{errors}</div>}
+           {errors && <div role="alert" className="font-medium text-red-700">{errors}</div>}
           <div className="flex items-center justify-between text-sm">
             <label className="flex items-center gap-2 text-charcoal/70">
               <input

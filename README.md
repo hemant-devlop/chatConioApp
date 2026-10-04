@@ -16,6 +16,16 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+## Backend CORS for local development
+
+When this frontend calls a separately hosted backend, add the frontend's local origin to the backend's `CORS_ALLOWED_ORIGINS` environment variable (comma-separated), for example:
+
+```text
+CORS_ALLOWED_ORIGINS=http://localhost:3000,http://127.0.0.1:3000
+```
+
+Add the local network origin too if accessing the frontend from another device. Restart or redeploy the backend after changing its environment.
+
 You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
