@@ -13,25 +13,25 @@ import { findUserByUsername, getNewConversation } from "@/lib/http";
 import { useSelector } from "react-redux";
 
 export default function HomePage() {
-  const {error}=useSelector(state=>state.app)
+  const { error } = useSelector(state => state.app)
   const router = useRouter()
   const [query, setQuery] = useState('')
   const [findMyFriend, setFindMyFriend] = useState(false)
-  const [homeError,setHomeError]=useState(null)
+  const [homeError, setHomeError] = useState(null)
   const [findUser, setFindUser] = useState(null)
-  const { user ,accessToken} = useAuth()
-  const handleFindMyFriend =async (e) => {
+  const { user, accessToken } = useAuth()
+  const handleFindMyFriend = async (e) => {
     e.preventDefault()
-    const res=await findUserByUsername(accessToken,query)
-    if(res?.success){
+    const res = await findUserByUsername(accessToken, query)
+    if (res?.success) {
       setHomeError(null)
       setFindUser(res?.data)
-    }else{
+    } else {
       setFindUser(null)
       setHomeError(res.message)
     }
   }
-  const handleFindUser =() => {
+  const handleFindUser = () => {
     router.push(`/profile/${findUser._id}`)
   }
 
@@ -52,25 +52,25 @@ export default function HomePage() {
           Thread<span className="text-slate">.</span>
         </span>
         <div className="flex items-center gap-2 sm:gap-4">
-          {user ?  <Link
-              href="/profile"
-              className="rounded-full bg-charcoal ps-4 pe-2 py-2 text-sm capitalize font-medium text-cream transition-colors hover:bg-charcoal/90"
-            >
-              {user?.name||'Welcome'} <Avatar name="hemant kumar " avatarUrl={null} status='offline' statusHide={false} size="sm"/>
-            </Link> :
-           <>
-            <Link
-              href="/login"
-              className="text-sm hidden lg:block font-medium text-charcoal/70 transition-colors hover:text-charcoal"
-            >
-              Sign in
-            </Link>
-            <Link
-              href="/signup"
-              className="rounded-lg bg-charcoal px-4 py-2 text-sm font-medium text-cream transition-colors hover:bg-charcoal/90"
-            >
-              Get started
-            </Link>
+          {user ? <Link
+            href="/profile"
+            className="rounded-full bg-charcoal ps-4 pe-2 py-2 text-sm capitalize font-medium text-cream transition-colors hover:bg-charcoal/90"
+          >
+            {user?.name || 'Welcome'} <Avatar name="hemant kumar " avatarUrl={null} status='offline' statusHide={false} size="sm" />
+          </Link> :
+            <>
+              <Link
+                href="/login"
+                className="text-sm hidden lg:block font-medium text-charcoal/70 transition-colors hover:text-charcoal"
+              >
+                Sign in
+              </Link>
+              <Link
+                href="/signup"
+                className="rounded-lg bg-charcoal px-4 py-2 text-sm font-medium text-cream transition-colors hover:bg-charcoal/90"
+              >
+                Get started
+              </Link>
             </>}
         </div>
       </header>
@@ -150,8 +150,8 @@ export default function HomePage() {
         </h1>
 
         <p className="max-w-md text-sm text-charcoal/60 sm:text-base">
-          {error?JSON.stringify(error):`Thread brings your messages, calls, and people into one fast, focused
-          place — built for people who'd rather talk than wait on a page to load.`}
+          Thread brings your messages, calls, and people into one fast, focused
+          place — built for people who'd rather talk than wait on a page to load.
         </p>
 
         <div className="flex flex-col gap-3 sm:flex-row">

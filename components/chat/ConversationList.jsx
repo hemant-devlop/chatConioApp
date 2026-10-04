@@ -49,12 +49,12 @@ export default function ConversationList() {
         <Link href="/" className="font-display  text-lg font-semibold text-charcoal">
           Thread<span className="text-slate">.</span>
         </Link>
-        {error?JSON.stringify(error):<Link
+      <Link
           href="/settings"
           className="text-sm text-charcoal/60 transition-colors hover:text-slate"
         >
           Settings
-        </Link>}
+        </Link>
       </div>
 
       <div className=" px-5 py-4">

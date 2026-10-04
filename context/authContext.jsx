@@ -23,7 +23,6 @@ export const AuthProvider = ({ children }) => {
             try {
                 const refreshResponse = await refreshAccessToken()
                 console.log("context::",refreshResponse)
-                dispatch(setError(refreshResponse))
                 const token = refreshResponse?.success ? refreshResponse?.data?.accessToken : null
 
                 if (!active) return;  
