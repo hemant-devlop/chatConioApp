@@ -1,6 +1,8 @@
 'use client';
 import { getMe, refreshAccessToken } from "@/lib/http";
+import { setError } from "@/redux/ReduxSlices/app";
 import { createContext, useContext, useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 
 const AuthContext = createContext(null);
 const authStatusValues = {
@@ -13,6 +15,7 @@ export const AuthProvider = ({ children }) => {
     const [accessToken, setAccessToken] = useState(null)
     const [user, setUser] = useState(null);
     const [authStatus, setAuthStatus] = useState(authStatusValues.loading)
+    const dispatch=useDispatch();
     useEffect(() => {
         let active = true;
 
@@ -20,6 +23,7 @@ export const AuthProvider = ({ children }) => {
             try {
                 const refreshResponse = await refreshAccessToken()
                 console.log("context::",refreshResponse)
+                dispatch(setError(refreshResponse))
                 const token = refreshResponse?.success ? refreshResponse?.data?.accessToken : null
 
                 if (!active) return;  

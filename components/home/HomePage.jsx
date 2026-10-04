@@ -10,24 +10,25 @@ import Avatar from "../chat/Avatar";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/authContext";
 import { findUserByUsername, getNewConversation } from "@/lib/http";
+import { useSelector } from "react-redux";
 
 export default function HomePage() {
+  const {error}=useSelector(state=>state.app)
   const router = useRouter()
   const [query, setQuery] = useState('')
   const [findMyFriend, setFindMyFriend] = useState(false)
-  const [error,setError]=useState(null)
+  const [homeError,setHomeError]=useState(null)
   const [findUser, setFindUser] = useState(null)
-
   const { user ,accessToken} = useAuth()
   const handleFindMyFriend =async (e) => {
     e.preventDefault()
     const res=await findUserByUsername(accessToken,query)
     if(res?.success){
-      setError(null)
+      setHomeError(null)
       setFindUser(res?.data)
     }else{
       setFindUser(null)
-      setError(res.message)
+      setHomeError(res.message)
     }
   }
   const handleFindUser =() => {
@@ -123,7 +124,7 @@ export default function HomePage() {
               </form>
             </div>
             <div className="relative z-999 px-6 py-2.5 space-y-2 ">
-              {error && <div>{error}</div>}
+              {homeError && <div>{homeError}</div>}
               {findUser && <div onClick={handleFindUser} className="cursor-pointer flex p-2.5 gap-2.5 bg-charcoal rounded-xl">
                 <Avatar name="hemant kumar " avatarUrl={null} status='offline' size="sm" />
                 <div>
@@ -149,8 +150,8 @@ export default function HomePage() {
         </h1>
 
         <p className="max-w-md text-sm text-charcoal/60 sm:text-base">
-          Thread brings your messages, calls, and people into one fast, focused
-          place — built for people who'd rather talk than wait on a page to load.
+          {error?error:`Thread brings your messages, calls, and people into one fast, focused
+          place — built for people who'd rather talk than wait on a page to load.`}
         </p>
 
         <div className="flex flex-col gap-3 sm:flex-row">

@@ -7,8 +7,10 @@ import { getConversations } from "@/lib/http";
 import ConversationListItem from "./ConversationListItem";
 import { SearchIcon } from "../ui/icons/Svg";
 import { useAuth } from "@/context/authContext";
+import { useSelector } from "react-redux";
 
 export default function ConversationList() {
+    const {error}=useSelector(state=>state.app)
   const { accessToken } = useAuth()
 
   const [conversations, setConversations] = useState([])
@@ -47,12 +49,12 @@ export default function ConversationList() {
         <Link href="/" className="font-display  text-lg font-semibold text-charcoal">
           Thread<span className="text-slate">.</span>
         </Link>
-        <Link
+        {error?error:<Link
           href="/settings"
           className="text-sm text-charcoal/60 transition-colors hover:text-slate"
         >
           Settings
-        </Link>
+        </Link>}
       </div>
 
       <div className=" px-5 py-4">
