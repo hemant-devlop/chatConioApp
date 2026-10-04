@@ -150,7 +150,7 @@ export default function HomePage() {
         </h1>
 
         <p className="max-w-md text-sm text-charcoal/60 sm:text-base">
-          {error?error:`Thread brings your messages, calls, and people into one fast, focused
+          {error?JSON.stringify(error):`Thread brings your messages, calls, and people into one fast, focused
           place — built for people who'd rather talk than wait on a page to load.`}
         </p>
 

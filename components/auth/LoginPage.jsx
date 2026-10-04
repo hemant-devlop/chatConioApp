@@ -8,8 +8,10 @@ import FormField from "@/components/auth/FormField";
 import { login } from "@/lib/http";
 import { useAuth } from "@/context/authContext";
 import { useRouter } from "next/navigation";
+import { useSelector } from "react-redux";
 
 export default function LoginPage() {
+   const {error}=useSelector(state=>state.app)
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isPassVisible, setIsPassVisible] = useState(false);
   const [errors, setErrors] = useState(null);
@@ -88,6 +90,7 @@ export default function LoginPage() {
             handlePasswordVisible={handlePasswordVisible}
           />
            {errors && <div role="alert" className="font-medium text-red-700">{errors}</div>}
+           {error && <div role="alert" className="font-medium text-red-700">{JSON.stringify(error)}</div>}
           <div className="flex items-center justify-between text-sm">
             <label className="flex items-center gap-2 text-charcoal/70">
               <input
