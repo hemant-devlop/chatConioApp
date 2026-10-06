@@ -14,12 +14,14 @@ export default function MessageInput({ onSend,conversationId }) {
     const text = message.trim();
     if (!text) return;
     onSend(text);
-    setValue("");
+    setMessage("");
   }
   const handleTyping = (e) => {
-    const value = e.target.value;
-    setMessage(value);
-    if (isTyping.current) {
+    const messageValue = e.target?.value;
+    setMessage(messageValue);
+
+    if (!isTyping.current) {
+      isTyping.current=true;
       socket.emit("typing:start", {conversationId})
     }
 
@@ -38,14 +40,14 @@ export default function MessageInput({ onSend,conversationId }) {
     >
       <input
         type="text"
-        value={value}
+        value={message}
         onChange={handleTyping}
         placeholder="Write a message…"
         className="flex-1 rounded-full border border-silver bg-cream/60 px-4 py-2.5 text-sm text-charcoal outline-none transition-colors placeholder:text-charcoal/40 focus:border-slate focus:ring-2 focus:ring-slate/20"
       />
       <button
         type="submit"
-        disabled={!value.trim()}
+        disabled={!message.trim()}
         className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-charcoal text-cream transition-colors hover:bg-charcoal/90 disabled:opacity-40"
         aria-label="Send message"
       >

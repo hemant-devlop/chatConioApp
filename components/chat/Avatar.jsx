@@ -5,7 +5,7 @@ const SIZES = {
 };
 
 const STATUS_COLORS = {
-  online: "bg-slate",
+  online: "bg-green-500",
   typing: "bg-slate",
   offline: "bg-silver",
 };
@@ -49,8 +49,8 @@ export default function Avatar({ name, avatarUrl, size = "md", status,statusHide
         className={`absolute bottom-0 right-0 rounded-full border-white bg-white ${DOT_SIZES[size]}`}
       >
         <span
-          className={`block h-full w-full rounded-full ${STATUS_COLORS[status] ?? "bg-silver"} ${
-            status === "typing" ? "animate-pulse" : ""
+          className={`block h-full w-full rounded-full ${status ?"bg-green-500": "bg-silver"} ${
+            status ? "animate-pulse" : ""
           }`}
         />
       </span>}

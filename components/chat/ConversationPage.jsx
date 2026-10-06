@@ -114,7 +114,7 @@ const router=useRouter()
 
   return (
     <div className="relative flex flex-1 h-dvh flex-col overflow-hidden">
-      <ChatTopBar user={user} />
+      <ChatTopBar chatUser={user} conversationId={conversationId}/>
       <MessageList messages={messages} isTyping={false} />
       <MessageInput onSend={handleSend} conversationId={conversationId} />
     </div>

@@ -1,28 +1,72 @@
 import Link from "next/link";
 import { PhoneIcon, VideoIcon, InfoIcon, SvgBack } from "../ui/icons/Svg";
 import Avatar from "./Avatar";
+import React, { useEffect, useState } from "react";
+import { socket } from "@/lib/socket";
+import { useAuth } from "@/context/authContext";
 
-// function statusLabel() {
+const ChatTopBar = React.memo(({ chatUser, conversationId }) => {
 
-//   if (user?.status === "typing") return "typing…";
+  const [isTyping, setIsTyping] = useState(false)
+  const [isUserStatus, setUserStatus] = useState([])
+  const { user } = useAuth()
+  // console.log(user)
+console.log(isUserStatus)
+  function statusLabel() {
 
-//   if (user?.status === "online") return "Online";
+    if (isTyping) return "typing…";
 
-//   if (user?.lastSeen) {
-//     return `Last seen ${new Date(user?.lastSeen).toLocaleString("en-US", {
-//       month: "short",
-//       day: "numeric",
-//       hour: "numeric",
-//       minute: "2-digit",
-//     })}`;
-//   }
+    if (isUserStatus.includes(chatUser?._id)) return "Online";
 
-//   return "Offline";
-// }
+    // if (chatUser?.lastSeen) {
+    //   return `Last seen ${new Date(user?.lastSeen).toLocaleString("en-US", {
+    //     month: "short",
+    //     day: "numeric",
+    //     hour: "numeric",
+    //     minute: "2-digit",
+    //   })}`;
+    // }
 
-export default function ChatTopBar({ user }) {
-  const isTyping = false;
-  console.log(user)
+    return "Offline";
+  }
+
+  useEffect(() => {
+    if (!conversationId) return;
+
+    const joinConversation = () => {
+      socket.emit("join-conversation", { conversationId });
+    };
+
+    if (socket.connected) joinConversation();
+
+    function handleTyping({ userId }) {
+      if (user?._id !== userId) {
+        setIsTyping(true)
+      }
+    }
+    function handleTypingStop({ userId }) {
+      if (user?._id !== userId) {
+        setIsTyping(false)
+      }
+    }
+    function handleStatus({ onlineUser }) {
+      setUserStatus(onlineUser)
+    }
+
+    socket.on("typing:start", handleTyping);
+    socket.on("user:online", handleStatus);
+    socket.on("typing:stop", handleTypingStop);
+    socket.on("connect", joinConversation);
+
+    return () => {
+      socket.off("typing:start", handleTyping)
+      socket.off("user:online", handleStatus);
+      socket.off("typing:stop", handleTypingStop);
+      socket.off("connect", joinConversation);
+      socket.emit("user:offline", {userId:user?._id})
+
+    }
+  }, [conversationId])
 
   return (
     <header className="z-20 flex shrink-0 items-center justify-between border-b border-silver bg-white px-6 py-3.5">
@@ -31,14 +75,14 @@ export default function ChatTopBar({ user }) {
           <SvgBack className="text-charcoal" />
         </Link>
 
-        <Link href={`/profile/${user?._id}`} className="cursor-pointer" >
-          <Avatar name={user?.name} avatarUrl={user?.avatarUrl} status={user?.status} size="sm" />
+        <Link href={`/profile/${chatUser?._id}`} className="cursor-pointer" >
+          <Avatar name={chatUser?.name} avatarUrl={chatUser?.avatarUrl} status={isUserStatus.includes(chatUser?._id)} size="sm" />
         </Link>
         <div>
-          <Link href={`/profile/${user?._id}`} className="cursor-pointer" >
-            <p className="text-sm font-medium text-charcoal capitalize">{user?.name}</p>
+          <Link href={`/profile/${chatUser?._id}`} className="cursor-pointer" >
+            <p className="text-sm font-medium text-charcoal capitalize">{chatUser?.name}</p>
           </Link>
-          <p className={`text-xs ${isTyping ? "font-medium text-slate" : "text-charcoal/50"}`}>  offline </p>
+          <p className={`text-xs font-medium text-charcoal/50`}> {statusLabel()} </p>
         </div>
       </div>
 
@@ -67,4 +111,6 @@ export default function ChatTopBar({ user }) {
       </div>
     </header>
   );
-}
+});
+
+export default ChatTopBar;
