@@ -34,7 +34,6 @@ export default function LoginPage() {
     setIsPassVisible(false)
     try {
       const response = await login(formData?.email.toLocaleLowerCase(), formData?.password)
-
       if(!response?.success){
         setErrors(response?.message)
       }
@@ -43,6 +42,7 @@ export default function LoginPage() {
         setAccessToken(response?.data?.accessToken);
         setUser(response?.data?.user)
         setAuthStatus("authenticated")
+        localStorage.setItem("isLoggedIn",true)
         router.replace('/home')
       }
     } catch (error) {

@@ -15,17 +15,22 @@ export const AuthProvider = ({ children }) => {
     const [accessToken, setAccessToken] = useState(null)
     const [user, setUser] = useState(null);
     const [authStatus, setAuthStatus] = useState(authStatusValues.loading)
-    const dispatch=useDispatch();
+    const dispatch = useDispatch();
     useEffect(() => {
+        const isUserLoggedIn = localStorage.getItem("isLoggedIn")
         let active = true;
 
         async function loadAuth() {
             try {
+                if (!isUserLoggedIn) {
+                    setAuthStatus(authStatusValues.unauthenticated)
+                    return;
+                }
                 const refreshResponse = await refreshAccessToken()
-                console.log("context::",refreshResponse)
+                console.log("context::", refreshResponse)
                 const token = refreshResponse?.success ? refreshResponse?.data?.accessToken : null
 
-                if (!active) return;  
+                if (!active) return;
 
                 if (!token) {
                     setAuthStatus(authStatusValues.unauthenticated)

@@ -14,6 +14,7 @@ export default function ProfilePage() {
       if(res.success){
         router.push('/login');
         setAuthStatus('unauthenticated');
+        localStorage.clear();
         setUser(null)
       }
   }
