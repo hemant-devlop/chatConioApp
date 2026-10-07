@@ -34,6 +34,7 @@ export const AuthProvider = ({ children }) => {
 
                 if (!token) {
                     setAuthStatus(authStatusValues.unauthenticated)
+                    localStorage.clear();
                     return;
                 }
 
@@ -44,6 +45,7 @@ export const AuthProvider = ({ children }) => {
                     setUser(null)
                     setAccessToken(null)
                     setAuthStatus(authStatusValues.unauthenticated)
+                    localStorage.clear()
                     return;
                 }
 
@@ -54,6 +56,7 @@ export const AuthProvider = ({ children }) => {
                 if (!active) return;
                 setUser(null)
                 setAccessToken(null)
+                localStorage.clear()
                 setAuthStatus(authStatusValues.unauthenticated)
             }
         }
