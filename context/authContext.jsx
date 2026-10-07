@@ -16,6 +16,7 @@ export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [authStatus, setAuthStatus] = useState(authStatusValues.loading)
     const dispatch = useDispatch();
+    const [resp,setResp]=useState('')
     useEffect(() => {
         const isUserLoggedIn = localStorage.getItem("isLoggedIn")
         let active = true;
@@ -27,9 +28,11 @@ export const AuthProvider = ({ children }) => {
                     return;
                 }
                 const refreshResponse = await refreshAccessToken()
+                const ress=JSON.stringify(refreshResponse)
+                // setResp((prev)=>prev+"refT"+ress)
                 // console.log("context::", refreshResponse)
                 const token = refreshResponse?.success ? refreshResponse?.data?.accessToken : null
-
+              
                 if (!active) return;
 
                 if (!token) {
@@ -68,7 +71,13 @@ export const AuthProvider = ({ children }) => {
     }, [])
 
     return (
-        <AuthContext.Provider value={{ accessToken, setAccessToken, user, setUser, authStatus, setAuthStatus }}>
+        <AuthContext.Provider value={{ accessToken, setAccessToken, user, setUser, authStatus, setAuthStatus,setResp }}>
+    <div className="fixed z-999 flex justify-center items-center bg-black/40 text-red-300 ">
+   
+    <div className="max-w-100 mt-auto bg-black text-xs">
+         {resp}
+    </div>
+    </div>
             {children}
         </AuthContext.Provider>
     )

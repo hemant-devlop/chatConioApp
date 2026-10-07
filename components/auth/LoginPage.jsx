@@ -15,7 +15,7 @@ export default function LoginPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isPassVisible, setIsPassVisible] = useState(false);
   const [errors, setErrors] = useState(null);
-  const {setAccessToken,setUser,setAuthStatus}=useAuth()
+  const {setAccessToken,setUser,setResp,setAuthStatus}=useAuth()
   const router=useRouter()
 
   const [formData, setFromData] = useState({
@@ -34,6 +34,8 @@ export default function LoginPage() {
     setIsPassVisible(false)
     try {
       const response = await login(formData?.email.toLocaleLowerCase(), formData?.password)
+      const r=JSON.stringify(response)
+      setResp(r)
       if(!response?.success){
         setErrors(response?.message)
       }
