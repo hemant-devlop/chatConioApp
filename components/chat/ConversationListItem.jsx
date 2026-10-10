@@ -14,11 +14,11 @@ function formatTime(timestamp) {
 }
 
 export default function ConversationListItem({ conversation, active }) {
-  const {user:me}=useAuth()
-  const _id=me?._id;
+  const {user}=useAuth()
+  const _id=user?._id;
   const { _id:conversationId, lastMessage, unreadCount=1,participants } = conversation;
 
-  const user=participants?.filter(user=>user._id!==_id)[0]
+  const chatUser=participants?.filter(user=>user._id!==_id)[0]
   // const isTyping = user.status === "typing";
   const isTyping = false;
   return (
@@ -28,12 +28,12 @@ export default function ConversationListItem({ conversation, active }) {
         active ? "bg-charcoal" : "hover:bg-silver/30"
       }`}
     >
-      <Avatar name={user.name} avatarUrl={user.avatarUrl} status={user.status} size="sm" />
+      <Avatar name={chatUser.name} avatarUrl={chatUser.avatarUrl} status={chatUser.status} size="sm" />
 
       <div className=" min-w-0 flex-1">
         <div className="flex items-center justify-between gap-2">
           <span className={`truncate text-sm capitalize font-medium ${active ? "text-cream" : "text-charcoal"}`}>
-            {user.name}
+            {chatUser.name}
           </span>
           <span className={`shrink-0 text-xs ${active ? "text-cream/60" : "text-charcoal/50"}`}>
             {formatTime(lastMessage?.createdAt)}

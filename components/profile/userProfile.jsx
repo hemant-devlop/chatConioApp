@@ -12,19 +12,19 @@ export default function UserProfile() {
     const [error, setError] = useState(null)
 
     async function getUserById(accessToken) {
-        const res=await getUser(accessToken,userId);
-        if(res.success){
+        const res = await getUser(accessToken, userId);
+        if (res.success) {
             setUser(res.data)
-        }else{
+        } else {
             setError(res.message)
         }
     }
 
-    useEffect(()=>{
-        if(accessToken){
-            getUserById(accessToken,userId)
+    useEffect(() => {
+        if (accessToken) {
+            getUserById(accessToken, userId)
         }
-    },[accessToken,userId])
+    }, [accessToken, userId])
     const router = useRouter()
 
     const handleMessage = async () => {
@@ -36,10 +36,10 @@ export default function UserProfile() {
             console.log("something went wrong")
         }
     }
-    if(error){
-       return (
-         <div>{error}</div>
-       )
+    if (error) {
+        return (
+            <div>{error}</div>
+        )
     }
 
     return (
@@ -48,10 +48,14 @@ export default function UserProfile() {
             <main className="mx-auto max-w-4xl px-4 py-6 md:px-8">
 
                 {/* Header */}
-                <div className="flex items-center justify-between mb-8">
-                    <h1 className="text-xl font-semibold capitalize">{user?.name}</h1>
+                <div className="flex items-center mb-8">
+                    <div onClick={() => router.back()} className="inline-flex cursor-pointer">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 512 512">
+                            <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="48" d="M328 112L184 256l144 144" />
+                        </svg>
 
-
+                    </div>
+                    <h1 className=" font-semibold uppercase ">{user?.name}</h1>
                 </div>
 
                 {/* Profile Section */}

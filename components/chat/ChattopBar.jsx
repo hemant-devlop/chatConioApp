@@ -11,7 +11,6 @@ const ChatTopBar = React.memo(({ chatUser, conversationId }) => {
   const [isUserStatus, setUserStatus] = useState([])
   const { user } = useAuth()
   // console.log(user)
-console.log(isUserStatus)
   function statusLabel() {
 
     if (isTyping) return "typing…";
@@ -31,6 +30,7 @@ console.log(isUserStatus)
   }
 
   useEffect(() => {
+
     if (!conversationId) return;
 
     const joinConversation = () => {
@@ -50,20 +50,22 @@ console.log(isUserStatus)
       }
     }
     function handleStatus({ onlineUser }) {
-      setUserStatus(onlineUser)
+      setUserStatus(onlineUser);
     }
 
     socket.on("typing:start", handleTyping);
     socket.on("user:online", handleStatus);
     socket.on("typing:stop", handleTypingStop);
     socket.on("connect", joinConversation);
+    socket.on("user:offline", handleStatus)
+
 
     return () => {
       socket.off("typing:start", handleTyping)
       socket.off("user:online", handleStatus);
       socket.off("typing:stop", handleTypingStop);
       socket.off("connect", joinConversation);
-      socket.emit("user:offline", {userId:user?._id})
+      socket.emit("user:offline", { userId: user?._id, conversationId })
 
     }
   }, [conversationId])
