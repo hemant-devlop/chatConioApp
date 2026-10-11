@@ -10,11 +10,11 @@ import { socket } from "@/lib/socket";
 import { useAuth } from "@/context/authContext";
 
 export default function ConversationPage() {
-  const { user: me, accessToken } = useAuth()
-  const _id = me?._id;
+  const { user, accessToken } = useAuth()
+  const _id = user._id;
   const { conversationId } = useParams()
 
-  const [user, setUser] = useState(null);
+  const [chatUser, setChatUser] = useState(null);
   const [messages, setMessages] = useState([]);
 const router=useRouter()
   // const [optimisticMessages, setOptimisticMessages] = useOptimistic(messages,(curr,newMess)=>[...curr,newMess]);
@@ -36,10 +36,10 @@ const router=useRouter()
         alert('user not found/invalid id')
          router.push('/chat')
       }
-      if (conversationResponse.success && _id) {
-        setUser(conversationResponse?.data?.participants.filter(c => c._id !== _id)[0])
+      if (conversationResponse.success && user) {
+        setChatUser(conversationResponse?.data?.participants.filter(c => c._id !== _id)[0])
       }
-      if (messageResponse.success && _id) {
+      if (messageResponse.success && user) {
         setMessages(messageResponse.data)
       }
 
@@ -114,7 +114,7 @@ const router=useRouter()
 
   return (
     <div className="relative flex flex-1 h-dvh flex-col overflow-hidden">
-      <ChatTopBar chatUser={user} conversationId={conversationId}/>
+      <ChatTopBar chatUser={chatUser} conversationId={conversationId}/>
       <MessageList messages={messages} isTyping={false} />
       <MessageInput onSend={handleSend} conversationId={conversationId} />
     </div>
