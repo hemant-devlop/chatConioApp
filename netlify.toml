@@ -1,5 +1,5 @@
 [[redirects]]
 from="/api/*"
-from="https://chatconnio.onrender.com/api/:splat"
+to="https://chatconnio.onrender.com/api/:splat"
 status=200
 force=true
